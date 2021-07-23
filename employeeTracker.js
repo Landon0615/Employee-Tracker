@@ -1,11 +1,12 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 
+
 const connection = mysql.createConnection({
   host: 'localhost',
 
   // Your port; if not 3306
-  port: 8001,
+  port: 3306,
 
   // Your username
   user: 'root',
@@ -15,70 +16,70 @@ const connection = mysql.createConnection({
   database: 'employee_trackerDB',
 });
 
-connection.connect((err) => {
+connection.connect(async (err) => {
   if (err) throw err;
-  runSearch();
+  console.log(`connected as id ${connection.threadId}\n`);
+  try {
+    const userChoice1 = await inquirer.prompt([
+        {
+            name: 'userOption',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: [
+              'View All Employees',
+              'View All Employees By Department',
+              'View All Employees By Manager',
+              'Add An Employee',
+              'Remove An Employee',
+              'Update Employee Role',
+              'Update Employee Manager',
+            ],
+        }
+    ]);
+    doWhatUserWantsTodo(userChoice1.userOption);
+  } catch (e) {
+      console.log(e);
+  }
 });
 
-const runSearch = () => {
-  inquirer.prompt({
-      name: 'action',
-      type: 'rawlist',
-      message: 'What would you like to do?',
-      choices: [
-        'View All Employees',
-        'View All Employees By Department',
-        'View All Employees By Manager',
-        'Add An Employee',
-        'Remove An Employee',
-        'Update Employee Role',
-        'Update Employee Manager',
-      ],
-    })
-    .then((answer) => {
-      switch (answer.action) {
-        case 'View All Employees':
+const doWhatUserWantsTodo = async (userChoice) => {
+
+        if (userChoice === 'View All Employees') {
           viewAllEmployees();
-          break;
+        }
 
-        case 'View All Employees By Department':
-          viewByDepartment();
-          break;
+        // if (userChoice === 'View All Employees By Department') {
+        //   viewByDepartment();
+        // }
 
-        case 'View All Employees By Manager':
-          viewByManager();
-          break;
+        // if (userChoice === 'View All Employees By Manager') {
+        //   viewByManager();
+        // }
 
-        case 'Add An Employee':
-          addEmployee();
-          break;
+        // if (userChoice === 'Add An Employee') {
+        //   addEmployee();
+        // }
 
-        case 'Remove An Employee':
-          removeEmployee();
-          break;
+        // if (userChoice === 'Remove An Employee') {
+        //   removeEmployee();
+        // }
 
-        case 'Update Employee Role':
-          newRole();
-          break;
+        //     if (userChoice === 'Update Employee Role') {
+        //   newRole();
+        // }
 
-         case 'Update Employee Manager':
-           newManager();
-           break;
+        //  if (userChoice === 'Update Employee Manager') {
+        //    newManager();
+        //  }    
+      };
 
-        default:
-          console.log(`Invalid action`);
-          break;
-      }
-    });
-};
 
 const viewAllEmployees = async() => {
     try{
         const employee = await connection.query('SELECT * FROM employee');
-        console.table(employee);
-        runSearch()
+        console.table(employee)
     }catch(err){
-        console.log(err)
+        console.log(err);
     }
     }
 
