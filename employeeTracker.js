@@ -48,13 +48,13 @@ const doWhatUserWantsTodo = async (userChoice) => {
           viewAllEmployees();
         }
 
-        // if (userChoice === 'View All Employees By Department') {
-        //   viewByDepartment();
-        // }
+        if (userChoice === 'View All Employees By Department') {
+          viewByDepartment();
+        }
 
-        // if (userChoice === 'View All Employees By Manager') {
-        //   viewByManager();
-        // }
+        if (userChoice === 'View All Employees By Manager') {
+          viewByManager();
+        }
 
         // if (userChoice === 'Add An Employee') {
         //   addEmployee();
@@ -73,15 +73,54 @@ const doWhatUserWantsTodo = async (userChoice) => {
         //  }    
       };
 
-
+var myCallBack = function(err, data) {
+  console.table(data)
+}
+/*
+TODOS
+  view roles
+  view departments
+  same function as viewAllEmployees
+*/  
 const viewAllEmployees = async() => {
     try{
-        const employee = await connection.query('SELECT * FROM employee');
-        console.table(employee)
+         await connection.query('SELECT * FROM employee', myCallBack );
+        
     }catch(err){
         console.log(err);
     }
     }
+
+// bonus but not listed.
+const viewByDepartment = async() => {
+  try{
+       await connection.query(
+       `SELECT 
+            department.name, employee.first_name, employee.last_name
+        FROM
+            employee
+                JOIN
+            role ON employee.role_id = role.id
+                JOIN
+            department ON role.department_id = department.id
+        GROUP BY department.id , employee.first_name , employee.last_name;`,
+        myCallBack );
+      
+  }catch(err){
+      console.log(err);
+  }
+  }
+// bonus
+const viewByManager = async() => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+
+
 
 
 
