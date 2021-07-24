@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 
+let deptArr= []
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -29,6 +30,8 @@ connection.connect(async (err) => {
               'View All Employees',
               'View All Employees By Department',
               'View All Employees By Manager',
+              'Add a Department',
+              'Add a Role',
               'Add An Employee',
               'Remove An Employee',
               'Update Employee Role',
@@ -36,6 +39,7 @@ connection.connect(async (err) => {
             ],
         }
     ]);
+    loadDepartments()
     doWhatUserWantsTodo(userChoice1.userOption);
   } catch (e) {
       console.log(e);
@@ -54,6 +58,14 @@ const doWhatUserWantsTodo = async (userChoice) => {
 
         if (userChoice === 'View All Employees By Manager') {
           viewByManager();
+        }
+
+        if(userChoice == "Add a Department"){
+          addDept()
+        }
+
+        if(userChoice == "Add a Role"){
+          addRole()
         }
 
         // if (userChoice === 'Add An Employee') {
@@ -119,8 +131,61 @@ const viewByManager = async() => {
   }
 }
 
+const loadDepartments = () => {
+  deptArr = [];
+  connection.query(`SELECT * from department`, (err, data) => {
+    if(err) throw err;
+    // console.log(data)
+    data.forEach(index => deptArr.push(index.name))
+  })
+}
+
+const addDept= () => {
+  inquirer.prompt([
+    {
+      message: 'What is the name of the new Department?',
+      name: 'deptName'
+    }
+  ]).then(async ({deptName}) => {
+    await connection.query(`
+    INSERT INTO department(name)
+    VALUES(?)`,
+    [deptName],
+    err => {
+      if(err) throw err
+    })
+  })
+}
 
 
+const addRole = () => {
+  inquirer.prompt([
+    {
+      message: 'What is the name of the new Role?',
+      name: 'roleName'
+    },
+    {
+      message: 'What is the salary for this new Role?',
+      name: 'roleSalary'
+    },
+    {
+      type: 'list',
+      choices: deptArr,
+      name: 'deptChoice',
+      message: 'What department does this new role belong to?'
+    }
+  ]).then(answer => {
+    console.log(answer)
+    let actualSqlId = deptArr.indexOf(answer.deptChoice) + 1;
+    //use an asynchronous function to get the actual sql ID without cheating, yes.
+    connection.query(`INSERT INTO role (title, salary, department_id) 
+    VALUES (?, ?, ?)`, 
+    [answer.roleName, answer.roleSalary, actualSqlId], 
+    err => {
+      if(err) throw err;
+    })
+  })
+}
 
 
 
