@@ -3,8 +3,8 @@ USE employee_trackerDB;
 INSERT INTO department (name)
 VALUES ('Sales'),
        ('Technician'),
-       ('Parts')
-       ('Finance'),
+       ('Parts'),
+       ('Finance');
        
 
 INSERT INTO role 
