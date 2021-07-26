@@ -21,7 +21,7 @@ MIT
 In order to test open the console and run the following:
 ```npm test```
 ### Video Example
-![video](https://drive.google.com/file/d/1q4MYcfyOMTQhHZOGRaaTJvHuGsjO_cQO/view)
+https://drive.google.com/file/d/1q4MYcfyOMTQhHZOGRaaTJvHuGsjO_cQO/view
 ### Questions:
 If you have any questions contact me on [GitHub](https://github.com/Landon0615) or contact 
 Landon Waddell at Landon.waddell@gmail.com
